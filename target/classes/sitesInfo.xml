@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sites>
+	<site id="1"><!-- get提交 -->
+		<name>手游世界</name>
+		<homePage>http://android.173sy.com</homePage>
+		<pageProcessor>com.appCrawler.pagePro.Android173Sy</pageProcessor>
+		<searchUrl>http://android.173sy.com/games/search.php?key=*#*#*#</searchUrl><!-- 其中的变量用*#*#*#代替 --><!-- !%!%!%代替& -->
+	</site>
+	
+	<site id="2"><!-- post提交 -->
+		<name>宝瓶[中国]</name>
+		<homePage>http://www.borpor.com/enddisplay.php?gid=92</homePage>
+		<pageProcessor>com.pagePro.BorporPagePro</pageProcessor>
+		<searchUrl>http://www.borpor.com/class.php</searchUrl>
+		<postPara>keyword</postPara><!-- post提交的参数名称，多个的话用,隔开 -->
+	</site>
+	
+	<site id="4"><!-- get提交 -->
+		<name>优亿市场[中国]</name>
+		<homePage>http://partner.eoemarket.com/qq/bibei/index/</homePage>
+		<pageProcessor>com.pagePro.EoemarketPagePro</pageProcessor>
+		<searchUrl>http://android.173sy.com/games/search.php?key=*#*#*#</searchUrl>
+	</site>
+	
+	<site id="3">
+		<name>极游网[中国]</name>
+		<homePage>http://www.ggg.cn/</homePage>
+		<pageProcessor>com.pagePro.GggChinaPagePro</pageProcessor>
+		<patern>.*ggg.*</patern>
+	</site>
+	<site id="5">
+		<name>九游</name>
+		<homePage>http://www.ggg.cn/</homePage>
+		<pageProcessor>GggChinaPagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*ggg.*</patern>
+	</site>
+	<site id="6">
+		<name>极游网[中国]</name>
+		<homePage>http://www.9game.cn/gamestore/</homePage>
+		<pageProcessor>com.appCrawler.pagePro.Android9GamePagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9game*.*</patern>
+		<searchUrl>http://www.ggg.cn/misc/search.cgi?q=*#*#*#!%!%!%type=all</searchUrl><!-- !%!%!%代替& -->
+	</site>
+	<site id="7">
+		<name>应用宝</name>
+		<homePage>http://sj.qq.com/myapp/category.htm?orgame=1</homePage>
+		<pageProcessor>com.pagePro.PagePromyapp</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*qq.*</patern>
+	</site>
+	<site id="8">
+		<name>安智网</name>
+		<homePage>http://www.anzhi.com/applist.html,http://www.anzhi.com/gamelist.html</homePage>
+		<pageProcessor>com.pagePro.PageProAnzhi</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*anzhi.*</patern>
+	</site>
+	<site id="9">
+		<name>安卓市场</name>
+		<homePage>http://apk.hiapk.com/apps,http://apk.hiapk.com/games</homePage>
+		<pageProcessor>com.pagePro.PageProHiapk</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*apk\\.hiapk.*</patern>
+	</site>
+	<site id="10">
+		<name>豌豆荚</name>
+		<homePage>http://www.wandoujia.com/apps</homePage>
+		<pageProcessor>com.pagePro.PageproWanDouJia</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*wandoujia.*</patern>
+	</site>
+	
+	<site id="11">
+		<name>百度应用商店</name>
+		<homePage>http://shouji.baidu.com/game/?from=as,http://shouji.baidu.com/software/?from=as</homePage>
+		<pageProcessor>com.pagePro.PageProBaidu</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*baidu.*</patern>
+	</site>
+	<site id="12">
+		<name>91助手</name>
+		<homePage>http://app.91.com/game,http://app.91.com/soft,http://apk.91.com/game,http://apk.91.com/soft</homePage>
+		<pageProcessor>com.pagePro.AppPagepro91</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*apk\\.91.*</patern>
+	</site>
+	<site id="13">
+		<name>360手机助手</name>
+		<homePage>http://zhushou.360.cn/list/index/cid/1,http://zhushou.360.cn/list/index/cid/2</homePage>
+		<pageProcessor>com.pagePro.PagePro360</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*360.*</patern>
+	</site>
+	<site id="14">
+		<name>移动美美</name>
+		<homePage>http://mm.10086.cn/iphone/software?pay=1,http://mm.10086.cn/iphone/game?pay=1,http://mm.10086.cn/android/software?pay=1,http://mm.10086.cn/android/game?pay=1</homePage>
+		<pageProcessor>com.pagePro.PageProYDMM</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*10086.*</patern>
+	</site>
+	<site id="15">
+		<name>魅族flyme</name>
+		<homePage>http://app.flyme.cn/apps/public/category/100/all/feed/index/0/18</homePage>
+		<pageProcessor>com.pagePro.FlymePagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*flyme.*</patern>
+	</site>
+	<site id="16">
+		<name>当乐网</name>
+		<homePage>http://android.d.cn/game/36792.html</homePage><!-- http://android.d.cn/game,http://android.d.cn/software,http://android.d.cn/netgame -->
+		<pageProcessor>com.pagePro.DCNPagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*android.d.*</patern>
+	</site>
+	<site id="17">
+		<name>齐齐乐</name>
+		<homePage>http://wy.77l.com/</homePage><!-- http://android.d.cn/game,http://android.d.cn/software,http://android.d.cn/netgame -->
+		<pageProcessor>com.pagePro.PagePro771</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*77l.*</patern>
+	</site>
+	<site id="18">
+		<name>七喜</name>
+		<homePage>http://www.7xdown.com/downlist/r_9_1.html</homePage><!-- http://android.d.cn/game,http://android.d.cn/software,http://android.d.cn/netgame -->
+		<pageProcessor>com.pagePro.PagePro7xdown</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*7xdown.*</patern>
+	</site>
+	<site id="19">
+		<name>淘宝</name>
+		<homePage>http://app.taobao.com/</homePage><!-- http://android.d.cn/game,http://android.d.cn/software,http://android.d.cn/netgame -->
+		<pageProcessor>com.pagePro.TaobaoPagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*taobao.*</patern>
+	</site>
+	
+	<site id="20">
+		<name>微游中国</name>
+		<homePage>http://www.9vv.com/</homePage><!-- http://android.d.cn/game,http://android.d.cn/software,http://android.d.cn/netgame -->
+		<pageProcessor>com.pagePro.PagePro9vv</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9vv.*</patern>
+	</site>
+	
+	<site id="21">
+		<name>oppo手机软件</name>
+		<homePage>http://store.nearme.com.cn/</homePage>
+		<pageProcessor>com.pagePro.OppoApkPagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9vv.*</patern>
+	</site>
+	
+	<site id="22">
+		<name>2265安卓游戏下载</name>
+		<homePage>http://www.2265.com/</homePage>
+		<pageProcessor>com.pagePro.PagePro2265</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9vv.*</patern>
+	</site>
+	<site id="23">
+		<name>爱吾安卓游戏</name>
+		<homePage>http://www.25az.com/</homePage>
+		<pageProcessor>com.pagePro.PagePro25az</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9vv.*</patern>
+	</site>
+	
+	<site id="24">
+		<name>琵琶网</name>
+		<homePage>http://www.pipaw.com/</homePage>
+		<pageProcessor>com.pagePro.PipaPagePro</pageProcessor>
+		<downloadLocation></downloadLocation>
+		<patern>.*9vv.*</patern>
+	</site>
+</sites>
