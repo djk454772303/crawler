@@ -16,6 +16,10 @@ public class Apk {
 	private String appSize;
 	private String appUpdateDate;
 	private String appType;
+	private String appCrawlTime;//the timestamp of crawling app
+	private String channelId;//the channel id of app
+
+
 	private String cookie;
 
 	/**
@@ -32,6 +36,7 @@ public class Apk {
 	 */
 	public Apk(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion,String appSize,String appUpdateDate, String appType,String cookie){	
+		init();
 		create(appName,appDetailUrl, appDownloadUrl, osPlatform,appVersion,
 				appSize,appUpdateDate, appType,cookie);
 	}
@@ -49,6 +54,7 @@ public class Apk {
 	 */
 	public Apk(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion,String appSize,String appUpdateDate, String appType){
+		init();
 		create(appName,appDetailUrl, appDownloadUrl, osPlatform,appVersion,
 				appSize,appUpdateDate, appType,null);
 	}
@@ -65,6 +71,7 @@ public class Apk {
 	 */
 	public Apk(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion,String appSize,String appUpdateDate){
+		init();
 		create(appName,appDetailUrl, appDownloadUrl, osPlatform,appVersion,
 				appSize,appUpdateDate, null,null);
 	}
@@ -80,10 +87,17 @@ public class Apk {
 	 */
 	public Apk(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion,String appSize){
+		init();
 		create(appName,appDetailUrl, appDownloadUrl, osPlatform,appVersion,
 				appSize,null, null,null);
 	}
-	
+	public String getChannelId() {
+		return channelId;
+	}
+
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
 	/**
 	 * create an apk object with the following parameter
 	 * @param appName
@@ -94,10 +108,13 @@ public class Apk {
 	 */
 	public Apk(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion){
+		init();
 		create(appName,appDetailUrl, appDownloadUrl, osPlatform,appVersion,
 				null,null, null,null);
 	}
-	
+	private void init(){
+		this.appCrawlTime = String.valueOf(System.currentTimeMillis());
+	}
 	public void create(String appName,String appDetailUrl,String appDownloadUrl,String osPlatform ,
 			String appVersion,String appSize,String appUpdateDate, String appType,String cookie){
 		this.appName = appName;
@@ -173,6 +190,13 @@ public class Apk {
 
 	public void setAppDownloadUrl(String appDownloadUrl) {
 		this.appDownloadUrl = appDownloadUrl;
+	}
+	public String getAppCrawlTime() {
+		return appCrawlTime;
+	}
+
+	public void setAppCrawlTime(String appCrawlTime) {
+		this.appCrawlTime = appCrawlTime;
 	}
 	
 	public String getCookie() {

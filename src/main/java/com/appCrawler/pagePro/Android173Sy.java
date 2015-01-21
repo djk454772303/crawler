@@ -18,30 +18,30 @@ import us.codecraft.webmagic.processor.PageProcessor;
  *
  */
 public class Android173Sy implements PageProcessor{
-	Site site = Site.me().setCharset("utf-8").setRetryTimes(2).setSleepTime(300);
+	Site site = Site.me().setCharset("utf-8").setRetryTimes(0).setSleepTime(300);
 	@Override
 	public Apk process(Page page) {
 		//index page
 		if(page.getUrl().regex("http://android.173sy.com/games/search.php\\?*").match()){
-			List<String> urls = page.getHtml().links("//div[@class='searchlist']").regex("http://android\\.173sy\\.com/.*").all();
+			//app的具体介绍页面
+			List<String> url1 = page.getHtml().links("//div[@class='searchlist']").regex("http://android\\.173sy\\.com/.*").all();
+			
+			//添加下一页url(翻页)
+			List<String> url2 = page.getHtml().links("//div[@class='pagel tac r mt_25']").regex("http://android\\.173sy\\.com/games/search.php\\?key=.*").all();
+			url1.addAll(url2);
 			
 			//remove the duplicate urls in list
-			HashSet<String> urlSet = new HashSet<String>(urls);
+			HashSet<String> urlSet = new HashSet<String>(url1);
 			
 			//add the urls to page
 			Iterator<String> it = urlSet.iterator();
 			while(it.hasNext()){
-				page.addTargetRequest(it.next());//添加app的具体介绍页面
+				page.addTargetRequest(it.next());
 			}
-			
-			////////////////////////////////////////////////////////
-			//添加下一页url
-			//String url = page.getHtml().links("//div[@class='pagel tac r mt_25']").regex("http://android\\.173sy\\.com/games/search\\.php?key=qq&p=*").all();
-			//page.addTargetRequests();
 		}
 		
 		//the app detail page
-		if(page.getUrl().regex("http://android\\.173sy\\.com/.*").match()){
+		if(page.getUrl().regex("http://android\\.173sy\\.com/games/detail*").match()){
 			Apk apk = null;
 			String appName = null;
 			String appDetailUrl = null;
@@ -63,13 +63,7 @@ public class Android173Sy implements PageProcessor{
 				appDownloadUrl = "http://android.173sy.com/download/downloadapk.php?id="+ id + "&s=1";
 				appVersion = rawVersion.split("： ")[1].trim();
 			}
-			System.out.println(appDownloadUrl);
 			appName = page.getHtml().xpath("//p[@class='dl_ititle']/text()").toString();
-			
-			if(page.getResultItems().get("downloadUrl") == null || page.getResultItems().get("name") == null
-					|| page.getResultItems().get("version") == null){
-				page.setSkip(true);
-			}
 			
 			if(appName != null && appDownloadUrl != null){
 				apk = new Apk(appName,appDetailUrl,appDownloadUrl,osPlatform ,appVersion,appSize);

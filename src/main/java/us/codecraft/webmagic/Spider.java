@@ -9,10 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import us.codecraft.webmagic.downloader.Downloader;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
-import us.codecraft.webmagic.pipeline.CollectorPipeline;
-import us.codecraft.webmagic.pipeline.ConsolePipeline;
-import us.codecraft.webmagic.pipeline.Pipeline;
-import us.codecraft.webmagic.pipeline.ResultItemsCollectorPipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.thread.CountableThreadPool;
 import us.codecraft.webmagic.utils.UrlUtils;
@@ -73,8 +69,8 @@ public class Spider implements Runnable, Task {
 
     protected String uuid;
 
-    //protected Scheduler scheduler = new QueueScheduler();
-    protected BlockingQueue<Request> queue;//存放url
+    protected BlockingQueue<Request> toDoQueue;//存放待抓取的url
+    protected BlockingQueue<Request> doneQueue;//存放待抓取的url
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -145,7 +141,7 @@ public class Spider implements Runnable, Task {
      * @see PageProcessor
      */
     public static Spider create(PageProcessor pageProcessor) {
-    	BlockingQueue<Apk> infos = new ArrayBlockingQueue<Apk>(10);
+    	BlockingQueue<Apk> infos = new LinkedBlockingQueue<Apk>();
         return new Spider(pageProcessor , infos);
     }
     
@@ -157,32 +153,44 @@ public class Spider implements Runnable, Task {
      * @see PageProcessor
      */
     public static Spider create(PageProcessor pageProcessor , BlockingQueue<Apk> infos) {
-    	
         return new Spider(pageProcessor , infos);
     }
-
     
+    /**
+     * create a spider with pageProcessor,taskId and channelId
+     * @param pageProcessor
+     * @param taskId
+     * @param channelId
+     */
     public Spider(PageProcessor pageProcessor , String taskId , String channelId){
+    	initContainer();
     	this.taskId = taskId;
     	this.channelId = channelId;
     	this.pageProcessor = pageProcessor;
     	this.site = pageProcessor.getSite();
-    	BlockingQueue<Apk> infos = new ArrayBlockingQueue<Apk>(10);
-    	this.appsInfo = infos;
-    	this.queue = new LinkedBlockingQueue<Request>();
     	
     }
     /**
-     * create a spider with pageProcessor.
-     *
+     * create a spider with pageProcessor and Apk container
      * @param pageProcessor
+     * @param infos
      */
     public Spider(PageProcessor pageProcessor , BlockingQueue<Apk> infos) {
+    	initContainer();
         this.pageProcessor = pageProcessor;
         this.site = pageProcessor.getSite();
         this.startRequests = pageProcessor.getSite().getStartRequests();
         this.appsInfo = infos;
-        this.queue = new LinkedBlockingQueue<Request>();
+        this.toDoQueue = new LinkedBlockingQueue<Request>();
+    }
+    
+    /**
+     * initialize the container
+     */
+    private void initContainer(){
+    	this.appsInfo = new LinkedBlockingQueue<Apk>();
+    	this.toDoQueue = new LinkedBlockingQueue<Request>();
+    	this.doneQueue = new LinkedBlockingQueue<Request>();
     }
 
     /**
@@ -252,9 +260,6 @@ public class Spider implements Runnable, Task {
         if (downloader == null) {
             this.downloader = new HttpClientDownloader();//默认使用的Downloader
         }
-//        if (pipelines.isEmpty()) {
-//            pipelines.add(new ConsolePipeline());
-//        }
         downloader.setThread(threadNum);//pageDownloader
         if (threadPool == null || threadPool.isShutdown()) {
             if (executorService != null && !executorService.isShutdown()) {
@@ -264,10 +269,8 @@ public class Spider implements Runnable, Task {
             }
         }
         if (startRequests != null) {
-        	//this.startRequests = pageProcessor.getSite().getStartRequests();
             for (Request request : startRequests) {
-//                scheduler.push(request, this);//public void push(Request request, Task task);
-                pushQueue(request , this);
+                pushTodoQueue(request , this);
             }
             startRequests.clear();
         }
@@ -281,7 +284,7 @@ public class Spider implements Runnable, Task {
         logger.info("Spider " + getUUID() + " started!");
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
 //            Request request = scheduler.poll(this);
-            Request request = pollQueue(this);
+            Request request = pollToDoQueue(this);
             if (request == null) {
                 if (threadPool.getThreadAlive() == 0 && exitWhenComplete) {
                     break;
@@ -291,7 +294,6 @@ public class Spider implements Runnable, Task {
             } else {
                 final Request requestFinal = request;
                 threadPool.execute(new Runnable() {
-                    //@Override
                     public void run() {
                         try {
                             processRequest(requestFinal);
@@ -346,13 +348,16 @@ public class Spider implements Runnable, Task {
         }
     }
 
+    /**
+     * the crawl task is finished
+     */
     public void close() {
         destroyEach(downloader);
         destroyEach(pageProcessor);
-//        for (Pipeline pipeline : pipelines) {
-//            destroyEach(pipeline);
-//        }
         threadPool.shutdown();
+        while(!appsInfo.isEmpty()){
+        	System.out.println(appsInfo.remove().getAppName());
+        }
     }
 
     private void destroyEach(Object object) {
@@ -394,6 +399,7 @@ public class Spider implements Runnable, Task {
         }
         Apk apk = pageProcessor.process(page);
         if(apk != null){
+        	apk.setChannelId(channelId);
         	appsInfo.add(apk);//add apk to the appsInfo)
         }
         extractAndAddRequests(page, spawnUrl);
@@ -421,7 +427,7 @@ public class Spider implements Runnable, Task {
         if (site.getDomain() == null && request != null && request.getUrl() != null) {
             site.setDomain(UrlUtils.getDomain(request.getUrl()));
         }
-        pushQueue(request , this);
+        pushTodoQueue(request , this);
     }
 
     protected void checkIfRunning() {
@@ -450,40 +456,6 @@ public class Spider implements Runnable, Task {
         return this;
     }
 
-    /**
-     * Download urls synchronizing.
-     *
-     * @param urls
-     * @return
-     */
-    public <T> List<T> getAll(Collection<String> urls) {
-        destroyWhenExit = false;
-        spawnUrl = false;
-        startRequests.clear();
-        for (Request request : UrlUtils.convertToRequests(urls)) {
-            addRequest(request);
-        }
-        CollectorPipeline collectorPipeline = getCollectorPipeline();
-        //pipelines.add(collectorPipeline);
-        run();
-        spawnUrl = true;
-        destroyWhenExit = true;
-        return collectorPipeline.getCollected();
-    }
-
-    protected CollectorPipeline getCollectorPipeline() {
-        return new ResultItemsCollectorPipeline();
-    }
-
-    public <T> T get(String url) {
-        List<String> urls = Lists.newArrayList(url);
-        List<T> resultItemses = getAll(urls);
-        if (resultItemses != null && resultItemses.size() > 0) {
-            return resultItemses.get(0);
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Add urls with information to crawl.<br/>
@@ -706,17 +678,51 @@ public class Spider implements Runnable, Task {
     
     
     /**
-     * 从队列中取出request
+     * get request from the job toDoQueue
      */
-    public synchronized Request pollQueue(Task task){
-    	return queue.poll();//顺序取
+    public synchronized Request pollToDoQueue(Task task){
+    	Request request = toDoQueue.poll();
+    	pushDoneQueue(request , task);
+    	return request;//Ordered to fetch
     }
     
     /**
-     * 向队列中添加request
+     * push request from the job toDoQueue
      * @param request
      */
-    public synchronized void pushQueue(Request request , Task task){
-    	queue.add(request);
-    }    
+    public synchronized void pushTodoQueue(Request request , Task task){
+    	if(!isDoneRequest(request , this) && !toDoQueue.contains(request)){
+    		toDoQueue.add(request);
+    	}
+    }
+    
+    /**
+     * push requet to the job done queue 
+     * @param request
+     * @param task
+     */
+    public synchronized void pushDoneQueue(Request request, Task task){
+    	if(request != null){
+    		doneQueue.add(request);
+    	}
+    }
+    
+    /**
+     * get requet to the job done queue 
+     * @param task
+     * @return
+     */
+    public synchronized Request pollDoneQueue(Task task){
+    	return doneQueue.poll();
+    }
+    
+    /**
+     * is the request contains in the job done queue
+     * @param request
+     * @param task
+     * @return
+     */
+    public synchronized boolean isDoneRequest(Request request , Task task){
+    	return doneQueue.contains(request);
+    }
 }

@@ -23,7 +23,6 @@ import us.codecraft.webmagic.processor.PageProcessor;
  * @author buildhappy
  *
  */
-//auto wired
 @Component
 public class ChannelsDom {
 	private String channelId;

@@ -28,8 +28,6 @@ public class Page {
 
     private Request request;
 
-    private ResultItems resultItems = new ResultItems();
-
     private Html html;
 
     private Json json;
@@ -45,22 +43,6 @@ public class Page {
     private List<Request> targetRequests = new ArrayList<Request>();
 
     public Page() {
-    }
-
-    public Page setSkip(boolean skip) {
-        resultItems.setSkip(skip);
-        return this;
-
-    }
-
-    /**
-     * store extract results
-     *
-     * @param key
-     * @param field
-     */
-    public void putField(String key, Object field) {
-        resultItems.put(key, field);
     }
 
     /**
@@ -194,12 +176,8 @@ public class Page {
 
     public void setRequest(Request request) {
         this.request = request;
-        this.resultItems.setRequest(request);
     }
 
-    public ResultItems getResultItems() {
-        return resultItems;
-    }
 
     public int getStatusCode() {
         return statusCode;
@@ -222,7 +200,6 @@ public class Page {
     public String toString() {
         return "Page{" +
                 "request=" + request +
-                ", resultItems=" + resultItems +
                 ", rawText='" + rawText + '\'' +
                 ", url=" + url +
                 ", statusCode=" + statusCode +

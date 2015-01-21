@@ -27,7 +27,6 @@ public class SpiderTrigger implements Runnable {
 		PageProcessor pagePro;
 		String postParam;
 		pagePro = channelDom.getPagePro();
-		System.out.println(pagePro);
 		String s = channelDom.getSearchUrl();
 		searchUrl = s.replace("*#*#*#", keyword);
 		//searchUrl = searchUrl + keyword;
@@ -44,8 +43,9 @@ public class SpiderTrigger implements Runnable {
 	}
 	
 	public static void main(String[] args){
-		SpiderTrigger spiderTrigger = new SpiderTrigger("task1" , "1" , "保卫萝卜");
+		SpiderTrigger spiderTrigger = new SpiderTrigger("task1" , "1" , "qq");
 		Thread thread = new Thread(spiderTrigger);
 		thread.run();
 	}
 }
+

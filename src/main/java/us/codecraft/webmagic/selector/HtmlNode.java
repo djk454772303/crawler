@@ -43,7 +43,10 @@ public class HtmlNode extends AbstractSelectable {
      * @return
      */
     public Selectable links(String region){
-    	
+//    	List<String> urls = xpath(region + "//a/*@href").all();
+//    	while(!urls.isEmpty()){
+//    		System.out.println(urls.remove(0));
+//    	}
     	return xpath(region + "//a/*@href");
 
     }
