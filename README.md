@@ -7,6 +7,3 @@ Crawl the infomations of apps from different channel.MyCrawler exposes the restf
 - concurrent crawling approach
 - simpified models
 - high-efficiency HTML parser JSOUP
-
-
-
