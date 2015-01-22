@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sites>
+	<site id="66"><!-- get提交 -->
+		<name>机锋论坛</name>
+		<homePage>http://android.173sy.com</homePage>
+		<pageProcessor>com.appCrawler.pagePro.ApkGfan</pageProcessor>
+		<searchUrl>http://apk.gfan.com/search?q=*#*#*#</searchUrl><!-- 其中的变量用*#*#*#代替 --><!-- !%!%!%代替& -->
+	</site>
+
+
+
+
 	<site id="1"><!-- get提交 -->
 		<name>手游世界</name>
 		<homePage>http://android.173sy.com</homePage>
